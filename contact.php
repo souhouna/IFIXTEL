@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IFIXTEL - Contact</title>
+  <link rel="stylesheet" href="cssduprojet.css" />
+</head>
+<body>
+
+<header>
+  <h1>IFIXTEL</h1>
+  <nav>
+    <ul>
+      <li><a href="accueil.html">Accueil</a></li>
+      <li><a href="apropos.html">À propos</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.php">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Contactez-nous</h2>
+
+  <?php
+  $success = "";
+  $error = "";
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nom = htmlspecialchars(trim($_POST["nom"] ?? ""));
+    $email = filter_var(trim($_POST["email"] ?? ""), FILTER_VALIDATE_EMAIL);
+    $message = htmlspecialchars(trim($_POST["message"] ?? ""));
+
+    if (!$nom || !$email || !$message) {
+      $error = "Merci de remplir tous les champs correctement.";
+    } else {
+      $to = "ifixtel.myplace@gmail.com"; // remplace par la vraie adresse mail
+      $subject = "Nouveau message depuis le site IFIXTEL";
+      $body = "Nom : $nom\nEmail : $email\n\nMessage :\n$message";
+      $headers = "From: $email";
+
+      if (mail($to, $subject, $body, $headers)) {
+        $success = "Merci pour votre message, nous vous répondrons rapidement !";
+      } else {
+        $error = "Erreur lors de l'envoi, veuillez réessayer plus tard.";
+      }
+    }
+  }
+  ?>
+
+  <?php if ($success): ?>
+    <p class="success"><?= $success ?></p>
+  <?php endif; ?>
+  <?php if ($error): ?>
+    <p class="error"><?= $error ?></p>
+  <?php endif; ?>
+
+  <form method="post" action="contact.php" class="contact-form">
+    <label for="nom">Nom complet :</label><br />
+    <input type="text" id="nom" name="nom" required /><br />
+
+    <label for="email">Email :</label><br />
+    <input type="email" id="email" name="email" required /><br />
+
+    <label for="message">Message :</label><br />
+    <textarea id="message" name="message" rows="6" required></textarea><br />
+
+    <button type="submit">Envoyer</button>
+    
+  </form>
+</main>
+
+<footer>
+  <p>&copy; 2025 IFIXTEL - Tous droits réservés</p>
+</footer>
+
+</body>
+</html>
